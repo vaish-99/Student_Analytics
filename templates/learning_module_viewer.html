@@ -1,0 +1,887 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Module Viewer - EduTrack Platform</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fedutrackp7083back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.12"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.2"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Header Section -->
+    <header class="bg-surface border-b border-border sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url 'dashboard' %}" class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="currentColor"/>
+                            <path d="M20 10L28 15V25L20 30L12 25V15L20 10Z" fill="white"/>
+                            <path d="M20 18L24 20.5V25.5L20 28L16 25.5V20.5L20 18Z" fill="#93C5FD"/>
+                        </svg>
+                        <span class="text-xl font-heading font-bold text-text-primary">EduTrack</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{% url 'dashboard' %}" class="text-text-secondary hover:text-primary transition-colors duration-200">Dashboard</a>
+                    <a href="{% url 'learning' %}" class="text-primary font-medium">Modules</a>
+                    <a href="{% url 'engagement' %}" class="text-text-secondary hover:text-primary transition-colors duration-200">Analytics</a>
+                </nav>
+
+                <!-- User Profile -->
+                <div class="flex items-center space-x-4">
+                    <button type="button" id="notificationBtn" class="relative p-2 text-text-secondary hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://img.rocket.new/generatedImages/rocket_gen_img_1ece17484-1763301747443.png" 
+                             alt="Student profile picture" 
+                             class="w-8 h-8 rounded-full object-cover"
+                             onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                        <span class="hidden md:block text-sm font-medium text-text-primary">Sarah Chen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Module Progress Bar -->
+    <div class="bg-surface border-b border-border sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                    <button type="button" id="backBtn" class="text-text-secondary hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-lg font-heading font-semibold text-text-primary">Introduction to Data Structures</h1>
+                        <p class="text-sm text-text-secondary">Section 3 of 8 • <span id="timeSpent">12 min</span> spent</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm font-medium text-text-secondary"><span id="progressPercent">37</span>%</span>
+                    <button type="button" id="toggleOutlineBtn" class="md:hidden p-2 text-text-secondary hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="progress-bar h-2">
+                <div id="moduleProgress" class="progress-bar-fill" style="width: 37%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid lg:grid-cols-12 gap-6">
+            <!-- Module Outline Sidebar -->
+            <aside id="outlineSidebar" class="lg:col-span-3 hidden lg:block">
+                <div class="card sticky top-32">
+                    <div class="p-4 border-b border-border">
+                        <h2 class="font-heading font-semibold text-text-primary">Module Outline</h2>
+                    </div>
+                    <nav class="p-2 max-h-[calc(100vh-16rem)] overflow-y-auto">
+                        <ul class="space-y-1">
+                            <!-- Section 1 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <svg class="w-5 h-5 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">1. Introduction</span>
+                                </button>
+                            </li>
+                            <!-- Section 2 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <svg class="w-5 h-5 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">2. Basic Concepts</span>
+                                </button>
+                            </li>
+                            <!-- Section 3 - Active -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded bg-primary-50 border border-primary-200 flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span class="text-sm font-medium text-primary">3. Arrays & Lists</span>
+                                </button>
+                            </li>
+                            <!-- Section 4 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">4. Stacks & Queues</span>
+                                </button>
+                            </li>
+                            <!-- Section 5 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">5. Linked Lists</span>
+                                </button>
+                            </li>
+                            <!-- Section 6 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">6. Trees & Graphs</span>
+                                </button>
+                            </li>
+                            <!-- Section 7 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">7. Hash Tables</span>
+                                </button>
+                            </li>
+                            <!-- Section 8 -->
+                            <li>
+                                <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                                    <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                                    <span class="text-sm text-text-secondary group-hover:text-text-primary">8. Final Assessment</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-9">
+                <!-- Learning Data Form & List -->
+                <div class="card p-6 mb-6">
+                    <h2 class="text-lg font-heading font-semibold text-text-primary mb-4">Submit Learning Data</h2>
+                    <form id="learningDataForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        {% csrf_token %}
+                        <div>
+                            <label class="text-sm text-text-secondary">Quiz Score</label>
+                            <input id="quiz" name="quiz" type="number" min="0" max="100" class="input" placeholder="e.g. 80">
+                        </div>
+                        <div>
+                            <label class="text-sm text-text-secondary">Assignment Score</label>
+                            <input id="assignment" name="assignment" type="number" min="0" max="100" class="input" placeholder="e.g. 75">
+                        </div>
+                        <div>
+                            <label class="text-sm text-text-secondary">Time Spent (hrs)</label>
+                            <input id="time" name="time" type="number" step="0.1" class="input" placeholder="e.g. 1.5">
+                        </div>
+                        <div>
+                            <button id="submitLearning" class="btn btn-primary w-full">Add</button>
+                        </div>
+                    </form>
+
+                    <div class="mt-6">
+                        <h3 class="text-sm text-text-secondary mb-2">Your Entries</h3>
+                        <div id="learningList" class="space-y-3"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!-- Content Section -->
+                    <article class="p-6 md:p-8">
+                        <div class="mb-6">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="badge badge-primary">Section 3</span>
+                                <span class="text-sm text-text-secondary">•</span>
+                                <span class="text-sm text-text-secondary">15 min read</span>
+                            </div>
+                            <h2 class="text-2xl md:text-3xl font-heading font-bold text-text-primary mb-4">Understanding Arrays and Lists</h2>
+                            <p class="text-text-secondary">Learn the fundamental concepts of arrays and lists, their implementations, and practical applications in programming.</p>
+                        </div>
+
+                        <!-- Video Content -->
+                        <div class="mb-8">
+                            <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden shadow-md">
+                                <img src="https://img.rocket.new/generatedImages/rocket_gen_img_1203ed1f5-1765113300753.png" 
+                                     alt="Educational video thumbnail showing data structures visualization with arrays and lists diagrams" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <button type="button" id="playVideoBtn" class="w-16 h-16 bg-primary hover:bg-primary-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110">
+                                        <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                    <div class="flex items-center justify-between text-white text-sm">
+                                        <span>0:00</span>
+                                        <span>12:34</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Text Content -->
+                        <div class="prose max-w-none space-y-6">
+                            <div>
+                                <h3 class="text-xl font-heading font-semibold text-text-primary mb-3">What are Arrays?</h3>
+                                <p class="text-text-secondary leading-relaxed">Arrays are fundamental data structures that store elements of the same type in contiguous memory locations. They provide constant-time access to elements using indices, making them highly efficient for random access operations. Understanding arrays is crucial for building more complex data structures and algorithms.</p>
+                            </div>
+
+                            <!-- Interactive Diagram -->
+                            <div class="bg-primary-50 border border-primary-200 rounded-lg p-6 my-6">
+                                <h4 class="font-heading font-semibold text-text-primary mb-4">Array Memory Layout</h4>
+                                <div class="flex items-center justify-center space-x-2 overflow-x-auto pb-2">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-16 h-16 bg-primary text-white rounded flex items-center justify-center font-mono font-semibold">10</div>
+                                        <span class="text-xs text-text-secondary mt-2">[0]</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-16 h-16 bg-primary text-white rounded flex items-center justify-center font-mono font-semibold">20</div>
+                                        <span class="text-xs text-text-secondary mt-2">[1]</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-16 h-16 bg-primary text-white rounded flex items-center justify-center font-mono font-semibold">30</div>
+                                        <span class="text-xs text-text-secondary mt-2">[2]</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-16 h-16 bg-primary text-white rounded flex items-center justify-center font-mono font-semibold">40</div>
+                                        <span class="text-xs text-text-secondary mt-2">[3]</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-16 h-16 bg-primary text-white rounded flex items-center justify-center font-mono font-semibold">50</div>
+                                        <span class="text-xs text-text-secondary mt-2">[4]</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-text-secondary mt-4 text-center">Elements stored in contiguous memory locations with index-based access</p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-xl font-heading font-semibold text-text-primary mb-3">Key Characteristics</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start space-x-3">
+                                        <svg class="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-text-secondary"><strong class="text-text-primary">Fixed Size:</strong> Arrays have a predetermined size that cannot be changed after creation</span>
+                                    </li>
+                                    <li class="flex items-start space-x-3">
+                                        <svg class="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-text-secondary"><strong class="text-text-primary">O(1) Access:</strong> Direct access to any element using its index in constant time</span>
+                                    </li>
+                                    <li class="flex items-start space-x-3">
+                                        <svg class="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-text-secondary"><strong class="text-text-primary">Contiguous Memory:</strong> Elements stored in adjacent memory locations for cache efficiency</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Code Example -->
+                            <div class="bg-gray-900 rounded-lg overflow-hidden my-6">
+                                <div class="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
+                                    <span class="text-sm font-mono text-gray-300">array_example.py</span>
+                                    <button type="button" class="text-gray-400 hover:text-white transition-colors text-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-gray-300"># Creating and accessing arrays
+numbers = [10, 20, 30, 40, 50]
+
+# Access element at index 2
+print(numbers[2])  # Output: 30
+
+# Modify element
+numbers[1] = 25
+
+# Iterate through array
+for num in numbers:
+    print(num)</code></pre>
+                            </div>
+
+                            <div>
+                                <h3 class="text-xl font-heading font-semibold text-text-primary mb-3">Dynamic Lists</h3>
+                                <p class="text-text-secondary leading-relaxed">Unlike arrays, dynamic lists (such as Python's list or Java's ArrayList) can grow and shrink in size. They provide the flexibility of dynamic sizing while maintaining efficient access patterns. Lists are implemented using arrays internally but handle resizing automatically.</p>
+                            </div>
+
+                            <!-- Comparison Table -->
+                            <div class="overflow-x-auto my-6">
+                                <table class="w-full border border-border rounded-lg overflow-hidden">
+                                    <thead class="bg-primary-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-sm font-semibold text-text-primary">Operation</th>
+                                            <th class="px-4 py-3 text-left text-sm font-semibold text-text-primary">Array</th>
+                                            <th class="px-4 py-3 text-left text-sm font-semibold text-text-primary">Dynamic List</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-border">
+                                        <tr class="bg-surface hover:bg-background transition-colors">
+                                            <td class="px-4 py-3 text-sm text-text-secondary">Access</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-secondary">O(1)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-secondary">O(1)</td>
+                                        </tr>
+                                        <tr class="bg-surface hover:bg-background transition-colors">
+                                            <td class="px-4 py-3 text-sm text-text-secondary">Insert (end)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-warning">O(n)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-secondary">O(1)*</td>
+                                        </tr>
+                                        <tr class="bg-surface hover:bg-background transition-colors">
+                                            <td class="px-4 py-3 text-sm text-text-secondary">Insert (middle)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-warning">O(n)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-warning">O(n)</td>
+                                        </tr>
+                                        <tr class="bg-surface hover:bg-background transition-colors">
+                                            <td class="px-4 py-3 text-sm text-text-secondary">Delete</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-warning">O(n)</td>
+                                            <td class="px-4 py-3 text-sm font-mono text-warning">O(n)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="text-xs text-text-secondary mt-2">* Amortized time complexity</p>
+                            </div>
+
+                            <!-- Practice Exercise -->
+                            <div class="bg-secondary-50 border border-secondary-200 rounded-lg p-6 my-6">
+                                <div class="flex items-start space-x-3">
+                                    <svg class="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-heading font-semibold text-text-primary mb-2">Practice Exercise</h4>
+                                        <p class="text-text-secondary mb-3">Try implementing a function that finds the maximum element in an array. Consider edge cases like empty arrays.</p>
+                                        <button type="button" class="btn btn-secondary text-sm">
+                                            Start Exercise
+                                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-xl font-heading font-semibold text-text-primary mb-3">Real-World Applications</h3>
+                                <p class="text-text-secondary leading-relaxed mb-4">Arrays and lists are used extensively in software development:</p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="bg-surface border border-border rounded-lg p-4">
+                                        <h5 class="font-semibold text-text-primary mb-2">Database Systems</h5>
+                                        <p class="text-sm text-text-secondary">Storing and indexing records for quick retrieval</p>
+                                    </div>
+                                    <div class="bg-surface border border-border rounded-lg p-4">
+                                        <h5 class="font-semibold text-text-primary mb-2">Image Processing</h5>
+                                        <p class="text-sm text-text-secondary">Representing pixel data in 2D arrays</p>
+                                    </div>
+                                    <div class="bg-surface border border-border rounded-lg p-4">
+                                        <h5 class="font-semibold text-text-primary mb-2">Gaming</h5>
+                                        <p class="text-sm text-text-secondary">Managing game states and player inventories</p>
+                                    </div>
+                                    <div class="bg-surface border border-border rounded-lg p-4">
+                                        <h5 class="font-semibold text-text-primary mb-2">Web Development</h5>
+                                        <p class="text-sm text-text-secondary">Handling collections of user data and API responses</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Resources -->
+                        <div class="mt-8 pt-6 border-t border-border">
+                            <h3 class="text-lg font-heading font-semibold text-text-primary mb-4">Additional Resources</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <a href="javascript:void(0)" class="flex items-center space-x-3 p-4 bg-background rounded-lg hover:bg-primary-50 transition-colors group">
+                                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-text-primary group-hover:text-primary">Reading Material</p>
+                                        <p class="text-sm text-text-secondary">Array algorithms guide</p>
+                                    </div>
+                                </a>
+                                <a href="javascript:void(0)" class="flex items-center space-x-3 p-4 bg-background rounded-lg hover:bg-primary-50 transition-colors group">
+                                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-text-primary group-hover:text-primary">Practice Problems</p>
+                                        <p class="text-sm text-text-secondary">10 coding challenges</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Navigation Controls -->
+                    <div class="border-t border-border p-6 bg-background">
+                        <div class="flex items-center justify-between">
+                            <button type="button" id="prevSectionBtn" class="btn btn-outline">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                Previous Section
+                            </button>
+                            <button type="button" id="nextSectionBtn" class="btn btn-primary">
+                                Next Section
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        // CSRF helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        async function fetchList() {
+            const res = await fetch('{% url "learning_list" %}');
+            const data = await res.json();
+            const container = document.getElementById('learningList');
+            container.innerHTML = '';
+            data.results.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'p-3 bg-background border border-border rounded flex items-center justify-between';
+                el.innerHTML = `
+                    <div>
+                        <div class="font-medium">Quiz: ${item.quiz} • Assign: ${item.assignment}</div>
+                        <div class="text-xs text-text-secondary">Time: ${item.time} hrs</div>
+                    </div>
+                    <div class="space-x-2">
+                        <button data-id="${item.id}" class="edit btn btn-outline text-sm">Edit</button>
+                        <button data-id="${item.id}" class="del btn btn-error text-sm">Delete</button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            attachHandlers();
+        }
+
+        function attachHandlers(){
+            document.querySelectorAll('#learningList .del').forEach(b => {
+                b.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    if (!confirm('Delete this entry?')) return;
+                    await fetch(`/learning/api/delete/${id}/`, { method: 'POST', headers: {'X-CSRFToken': csrftoken} });
+                    fetchList();
+                });
+            });
+            document.querySelectorAll('#learningList .edit').forEach(b => {
+                b.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    // simple inline edit prompt
+                    const quiz = prompt('Quiz score');
+                    const assignment = prompt('Assignment score');
+                    const time = prompt('Time spent (hrs)');
+                    if (quiz === null) return;
+                    const form = new FormData();
+                    form.append('quiz', quiz);
+                    form.append('assignment', assignment);
+                    form.append('time', time);
+                    await fetch(`/learning/api/update/${id}/`, { method: 'POST', headers: {'X-CSRFToken': csrftoken}, body: form });
+                    fetchList();
+                });
+            });
+        }
+
+        document.getElementById('learningDataForm').addEventListener('submit', async function(e){
+            e.preventDefault();
+            const form = new FormData(this);
+            await fetch('{% url "learning_create" %}', { method: 'POST', headers: {'X-CSRFToken': csrftoken}, body: form });
+            this.reset();
+            fetchList();
+        });
+
+        // initial load
+        fetchList();
+    </script>
+
+    <!-- Floating Action Panel -->
+    <div class="fixed bottom-6 right-6 flex flex-col space-y-3 z-40">
+        <!-- Mark as Complete Button -->
+        <button type="button" id="markCompleteBtn" class="btn btn-secondary shadow-lg px-6 py-3 text-base font-semibold">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Mark Complete
+        </button>
+
+        <!-- Bookmark Toggle -->
+        <button type="button" id="bookmarkBtn" class="w-14 h-14 bg-surface border border-border rounded-full shadow-lg flex items-center justify-center hover:bg-primary-50 hover:border-primary transition-all duration-200">
+            <svg id="bookmarkIcon" class="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+        </button>
+
+        <!-- Notes Button -->
+        <button type="button" id="notesBtn" class="w-14 h-14 bg-surface border border-border rounded-full shadow-lg flex items-center justify-center hover:bg-primary-50 hover:border-primary transition-all duration-200">
+            <svg class="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Notes Modal -->
+    <div id="notesModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-surface rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b border-border">
+                <h3 class="text-xl font-heading font-bold text-text-primary">My Notes</h3>
+                <button type="button" id="closeNotesModal" class="text-text-secondary hover:text-text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <textarea id="notesTextarea" class="input min-h-[300px] resize-none" placeholder="Take notes about this section..."></textarea>
+                <div class="flex items-center justify-between mt-4">
+                    <p class="text-sm text-text-secondary">Last saved: <span id="lastSaved">Never</span></p>
+                    <button type="button" id="saveNotesBtn" class="btn btn-primary">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                        </svg>
+                        Save Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Outline Modal -->
+    <div id="mobileOutlineModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
+        <div class="absolute inset-y-0 right-0 w-80 bg-surface shadow-2xl overflow-y-auto">
+            <div class="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-surface z-10">
+                <h3 class="font-heading font-semibold text-text-primary">Module Outline</h3>
+                <button type="button" id="closeMobileOutline" class="text-text-secondary hover:text-text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <nav class="p-2">
+                <ul class="space-y-1">
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <svg class="w-5 h-5 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">1. Introduction</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <svg class="w-5 h-5 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">2. Basic Concepts</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded bg-primary-50 border border-primary-200 flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm font-medium text-primary">3. Arrays & Lists</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">4. Stacks & Queues</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">5. Linked Lists</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">6. Trees & Graphs</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">7. Hash Tables</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-background transition-colors flex items-center space-x-3 group">
+                            <div class="w-5 h-5 rounded-full border-2 border-border flex-shrink-0"></div>
+                            <span class="text-sm text-text-secondary group-hover:text-text-primary">8. Final Assessment</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-surface border-t border-border mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-6 h-6 text-primary" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="currentColor"/>
+                            <path d="M20 10L28 15V25L20 30L12 25V15L20 10Z" fill="white"/>
+                        </svg>
+                        <span class="text-lg font-heading font-bold text-text-primary">EduTrack</span>
+                    </div>
+                    <p class="text-sm text-text-secondary">Empowering students with interactive learning experiences and comprehensive progress tracking.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-text-primary mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-text-secondary">
+                        <li><a href="student_dashboard.html" class="hover:text-primary transition-colors">Dashboard</a></li>
+                        <li><a href="{% url 'learning' %}" class="hover:text-primary transition-colors">Modules</a></li>
+                        <li><a href="{% url 'engagement' %}" class="hover:text-primary transition-colors">Analytics</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-text-primary mb-3">Legal</h4>
+                    <ul class="space-y-2 text-sm text-text-secondary">
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Terms of Service</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-border text-center text-sm text-text-secondary">
+                <p>© 2025 EduTrack Platform. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Time tracking
+        let timeSpent = 720; // 12 minutes in seconds
+        let timerInterval;
+
+        function startTimeTracking() {
+            timerInterval = setInterval(() => {
+                timeSpent++;
+                updateTimeDisplay();
+                // Save to localStorage for persistence
+                localStorage.setItem('module_time_spent', timeSpent);
+            }, 1000);
+        }
+
+        function updateTimeDisplay() {
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+            document.getElementById('timeSpent').textContent = `${minutes} min`;
+        }
+
+        // Load saved time on page load
+        const savedTime = localStorage.getItem('module_time_spent');
+        if (savedTime) {
+            timeSpent = parseInt(savedTime);
+            updateTimeDisplay();
+        }
+
+        // Start tracking when page loads
+        startTimeTracking();
+
+        // Stop tracking when page unloads
+        window.addEventListener('beforeunload', () => {
+            clearInterval(timerInterval);
+        });
+
+        // Bookmark functionality
+        const bookmarkBtn = document.getElementById('bookmarkBtn');
+        const bookmarkIcon = document.getElementById('bookmarkIcon');
+        let isBookmarked = localStorage.getItem('module_bookmarked') === 'true';
+
+        function updateBookmarkUI() {
+            if (isBookmarked) {
+                bookmarkIcon.setAttribute('fill', 'currentColor');
+                bookmarkIcon.classList.add('text-warning');
+                bookmarkIcon.classList.remove('text-text-secondary');
+            } else {
+                bookmarkIcon.setAttribute('fill', 'none');
+                bookmarkIcon.classList.remove('text-warning');
+                bookmarkIcon.classList.add('text-text-secondary');
+            }
+        }
+
+        updateBookmarkUI();
+
+        bookmarkBtn.addEventListener('click', () => {
+            isBookmarked = !isBookmarked;
+            localStorage.setItem('module_bookmarked', isBookmarked);
+            updateBookmarkUI();
+            
+            // Show feedback
+            const feedback = document.createElement('div');
+            feedback.className = 'fixed bottom-24 right-6 bg-surface border border-border rounded-lg shadow-lg px-4 py-2 text-sm text-text-primary z-50';
+            feedback.textContent = isBookmarked ? 'Bookmark added' : 'Bookmark removed';
+            document.body.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 2000);
+        });
+
+        // Notes functionality
+        const notesBtn = document.getElementById('notesBtn');
+        const notesModal = document.getElementById('notesModal');
+        const closeNotesModal = document.getElementById('closeNotesModal');
+        const notesTextarea = document.getElementById('notesTextarea');
+        const saveNotesBtn = document.getElementById('saveNotesBtn');
+        const lastSaved = document.getElementById('lastSaved');
+
+        // Load saved notes
+        const savedNotes = localStorage.getItem('module_notes');
+        if (savedNotes) {
+            notesTextarea.value = savedNotes;
+            const savedTime = localStorage.getItem('notes_last_saved');
+            if (savedTime) {
+                lastSaved.textContent = new Date(savedTime).toLocaleString();
+            }
+        }
+
+        notesBtn.addEventListener('click', () => {
+            notesModal.classList.remove('hidden');
+            notesTextarea.focus();
+        });
+
+        closeNotesModal.addEventListener('click', () => {
+            notesModal.classList.add('hidden');
+        });
+
+        notesModal.addEventListener('click', (e) => {
+            if (e.target === notesModal) {
+                notesModal.classList.add('hidden');
+            }
+        });
+
+        saveNotesBtn.addEventListener('click', () => {
+            const notes = notesTextarea.value;
+            localStorage.setItem('module_notes', notes);
+            const now = new Date().toISOString();
+            localStorage.setItem('notes_last_saved', now);
+            lastSaved.textContent = new Date(now).toLocaleString();
+            
+            // Show success feedback
+            const originalText = saveNotesBtn.innerHTML;
+            saveNotesBtn.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Saved!';
+            saveNotesBtn.disabled = true;
+            setTimeout(() => {
+                saveNotesBtn.innerHTML = originalText;
+                saveNotesBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Mark as complete functionality
+        const markCompleteBtn = document.getElementById('markCompleteBtn');
+        let isCompleted = localStorage.getItem('section_3_completed') === 'true';
+
+        function updateCompleteButton() {
+            if (isCompleted) {
+                markCompleteBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Completed';
+                markCompleteBtn.classList.remove('btn-secondary');
+                markCompleteBtn.classList.add('btn-outline');
+            }
+        }
+
+        updateCompleteButton();
+
+        markCompleteBtn.addEventListener('click', () => {
+            if (!isCompleted) {
+                isCompleted = true;
+                localStorage.setItem('section_3_completed', 'true');
+                updateCompleteButton();
+                
+                // Update progress
+                const newProgress = 50; // Moving to next section
+                document.getElementById('moduleProgress').style.width = newProgress + '%';
+                document.getElementById('progressPercent').textContent = newProgress;
+                
+                // Show achievement notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-20 right-6 bg-secondary text-white rounded-lg shadow-lg px-6 py-4 z-50 achievement-badge';
+                notification.innerHTML = '<div class="flex items-center space-x-3"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><div><p class="font-semibold">Section Completed!</p><p class="text-sm opacity-90">Great progress on your learning journey</p></div></div>';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 4000);
+            }
+        });
+
+        // Mobile outline toggle
+        const toggleOutlineBtn = document.getElementById('toggleOutlineBtn');
+        const mobileOutlineModal = document.getElementById('mobileOutlineModal');
+        const closeMobileOutline = document.getElementById('closeMobileOutline');
+
+        toggleOutlineBtn.addEventListener('click', () => {
+            mobileOutlineModal.classList.remove('hidden');
+        });
+
+        closeMobileOutline.addEventListener('click', () => {
+            mobileOutlineModal.classList.add('hidden');
+        });
+
+        mobileOutlineModal.addEventListener('click', (e) => {
+            if (e.target === mobileOutlineModal) {
+                mobileOutlineModal.classList.add('hidden');
+            }
+        });
+
+        // Navigation
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'student_dashboard.html';
+        });
+
+        document.getElementById('prevSectionBtn').addEventListener('click', () => {
+            // Navigate to previous section
+            window.location.href = "{% url 'learning' %}" + '?section=2';
+        });
+
+        document.getElementById('nextSectionBtn').addEventListener('click', () => {
+            // Navigate to next section
+            window.location.href = "{% url 'learning' %}" + '?section=4';
+        });
+
+        // Video play button
+        document.getElementById('playVideoBtn').addEventListener('click', function() {
+            // In a real implementation, this would start video playback
+            this.parentElement.innerHTML = '<div class="text-white text-center"><p class="mb-2">Video playback would start here</p><p class="text-sm opacity-75">In production, integrate with video player API</p></div>';
+        });
+
+        // Close modals on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                notesModal.classList.add('hidden');
+                mobileOutlineModal.classList.add('hidden');
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

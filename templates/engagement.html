@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engagement Metrics - EduTrack</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <header class="bg-surface border-b border-border sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'dashboard' %}" class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="currentColor"/>
+                            <path d="M20 10L28 15V25L20 30L12 25V15L20 10Z" fill="white"/>
+                        </svg>
+                        <span class="text-xl font-heading font-bold text-text-primary">EduTrack</span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{% url 'dashboard' %}" class="text-text-secondary hover:text-primary">Dashboard</a>
+                    <a href="{% url 'learning' %}" class="text-text-secondary hover:text-primary">Modules</a>
+                    <a href="{% url 'engagement' %}" class="text-primary font-medium">Analytics</a>
+                    <a href="{% url 'logout' %}" class="text-text-secondary hover:text-error">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h1 class="text-3xl font-heading font-bold text-text-primary">Student Engagement</h1>
+            <p class="text-text-secondary mt-1">Overview of student activity and engagement across modules.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="card p-4">
+                <h3 class="text-sm text-text-secondary">Overall Engagement</h3>
+                <div class="text-2xl font-bold text-text-primary mt-2">{{ overall_engagement|default:'--' }}%</div>
+            </div>
+            <div class="card p-4">
+                <h3 class="text-sm text-text-secondary">Avg Time Spent</h3>
+                <div class="text-2xl font-bold text-text-primary mt-2">{{ avg_time|default:'--' }} hrs</div>
+            </div>
+            <div class="card p-4">
+                <h3 class="text-sm text-text-secondary">Active Students</h3>
+                <div class="text-2xl font-bold text-text-primary mt-2">{{ active_students|default:'--' }}</div>
+            </div>
+            <div class="card p-4">
+                <h3 class="text-sm text-text-secondary">Completion Rate</h3>
+                <div class="text-2xl font-bold text-text-primary mt-2">{{ completion_rate|default:'--' }}%</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <section class="lg:col-span-2 card p-6">
+                <h2 class="text-xl font-heading font-semibold text-text-primary mb-4">Engagement Over Time</h2>
+                <div style="height:320px;">
+                    <canvas id="engagementChart" class="w-full h-full"></canvas>
+                </div>
+            </section>
+
+            <div class="card p-4">
+                <h2 class="text-lg font-heading font-semibold text-text-primary mb-4">Top Modules by Engagement</h2>
+                <div class="text-2xl font-bold text-text-primary mt-2">{% if overall_engagement %}{{ overall_engagement }}%{% else %}72%{% endif %}</div>
+                    {% if top_modules %}
+                        {% for mod in top_modules %}
+                        <li class="flex items-center justify-between">
+                <div class="text-2xl font-bold text-text-primary mt-2">{% if avg_time %}{{ avg_time }} hrs{% else %}1.8 hrs{% endif %}</div>
+                                <div class="font-medium text-text-primary">{{ mod.name }}</div>
+                                <div class="text-xs">{{ mod.course }}</div>
+                            </div>
+                <div class="text-2xl font-bold text-text-primary mt-2">{% if active_students %}{{ active_students }}{% else %}324{% endif %}</div>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                <div class="text-2xl font-bold text-text-primary mt-2">{% if completion_rate %}{{ completion_rate }}%{% else %}58%{% endif %}</div>
+                    {% endif %}
+                </ul>
+            </aside>
+        </div>
+
+        <section class="card p-6 mt-6">
+            <h2 class="text-lg font-heading font-semibold text-text-primary mb-4">Student Engagement Details</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-text-secondary text-left">
+                        <tr>
+                            <th class="px-3 py-2">Student</th>
+                            <th class="px-3 py-2">Last Active</th>
+                            <th class="px-3 py-2">Avg Time (hrs)</th>
+                            <th class="px-3 py-2">Engagement %</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        {% if engagement_list %}
+                            {% for s in engagement_list %}
+                            <tr>
+                                <td class="px-3 py-2">{{ s.name }}</td>
+                                <td class="px-3 py-2">{{ s.last_active }}</td>
+                                <td class="px-3 py-2">{{ s.avg_time }}</td>
+                                <td class="px-3 py-2 font-semibold">{{ s.engagement }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td class="px-3 py-2" colspan="4">No records available</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface border-t border-border mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-text-secondary">
+            © 2025 EduTrack Platform
+        </div>
+    </footer>
+
+    <script>
+        // Simple chart rendering with fallback sample data if none provided
+        const chartCtx = document.getElementById('engagementChart').getContext('2d');
+        let labels = [];
+        let dataPoints = [];
+
+        try {
+            labels = JSON.parse('{{ engagement_labels|default:"[]"|escapejs }}');
+            dataPoints = JSON.parse('{{ engagement_values|default:"[]"|escapejs }}');
+        } catch (e) {
+            labels = [];
+            dataPoints = [];
+        }
+
+        // If there's no server-provided data, use static sample data
+        if (!labels || labels.length === 0) {
+            labels = ['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6'];
+        }
+        if (!dataPoints || dataPoints.length === 0) {
+            dataPoints = [60,72,68,75,70,78];
+        }
+
+        new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Engagement %',
+                    data: dataPoints,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102,126,234,0.12)',
+                    tension: 0.25,
+                    fill: true,
+                    pointRadius: 3,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

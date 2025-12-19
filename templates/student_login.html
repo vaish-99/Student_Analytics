@@ -1,0 +1,631 @@
+{% load static %}
+{% if request.user.is_authenticated %}
+<script>window.location.href = "{% url 'dashboard' %}";</script>
+{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - EduTrack Platform</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fedutrackp7083back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.12"></script>
+  <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.2"></script>
+  </head>
+<body class="bg-background min-h-screen">
+    <!-- Header Section -->
+    <header class="bg-surface border-b border-border sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url 'login' %}" class="flex items-center space-x-2">
+                        <svg class="w-8 h-8 text-primary" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="currentColor"/>
+                            <path d="M20 10L28 15V25L20 30L12 25V15L20 10Z" fill="white"/>
+                            <path d="M20 18L24 20.5V25.5L20 28L16 25.5V20.5L20 18Z" fill="#93C5FD"/>
+                        </svg>
+                        <span class="text-xl font-heading font-bold text-text-primary">EduTrack</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="{% url 'login' %}" class="text-primary font-medium">Login</a>
+                    <a href="{% url 'register' %}" class="text-text-secondary hover:text-primary transition-colors duration-200">Register</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <!-- Left Column - Welcome Section -->
+            <div class="hidden lg:block">
+                <div class="space-y-6">
+                    <div>
+                        <h1 class="text-4xl font-heading font-bold text-text-primary mb-4">Welcome Back to EduTrack</h1>
+                        <p class="text-lg text-text-secondary">Continue your learning journey with personalized modules and comprehensive progress tracking.</p>
+                    </div>
+                    
+                    <!-- Feature Highlights -->
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4 p-4 bg-primary-50 rounded-lg border border-primary-100">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-text-primary mb-1">Personalized Dashboard</h3>
+                                <p class="text-sm text-text-secondary">Access your customized learning dashboard with real-time progress updates</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-4 bg-secondary-50 rounded-lg border border-secondary-100">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-text-primary mb-1">Quick Resume Learning</h3>
+                                <p class="text-sm text-text-secondary">Pick up exactly where you left off with saved progress</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 p-4 bg-warning-50 rounded-lg border border-warning-100">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-text-primary mb-1">Time-Tracked Sessions</h3>
+                                <p class="text-sm text-text-secondary">Monitor your learning time and optimize study schedules</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Display -->
+                    <div class="bg-surface border border-border rounded-lg p-6 shadow-sm">
+                        <h3 class="font-semibold text-text-primary mb-4">Platform Statistics</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-primary">15,847</p>
+                                <p class="text-xs text-text-secondary mt-1">Active Students</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-secondary">2,340</p>
+                                <p class="text-xs text-text-secondary mt-1">Learning Modules</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-warning">98.5%</p>
+                                <p class="text-xs text-text-secondary mt-1">Satisfaction Rate</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Achievement -->
+                    <div class="bg-gradient-to-r from-primary-50 to-secondary-50 border border-primary-100 rounded-lg p-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex-shrink-0">
+                                <svg class="w-10 h-10 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-text-primary">New Achievement Unlocked!</p>
+                                <p class="text-sm text-text-secondary">Students earned 12,450 badges this week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Login Form -->
+            <div class="w-full max-w-md mx-auto lg:mx-0">
+                <div class="bg-surface border border-border rounded-xl shadow-lg p-6 sm:p-8">
+                    <!-- Form Header -->
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-2">Sign In to Your Account</h2>
+                        <p class="text-text-secondary">Enter your credentials to access your learning dashboard</p>
+                    </div>
+
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="successMessage" class="hidden mb-4 p-4 bg-success-50 border border-success-200 rounded-lg">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-success-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <p class="text-sm font-medium text-success-700">Registration successful! Please login to continue.</p>
+                        </div>
+                    </div>
+
+                    <!-- Error Message (Hidden by default). If server provided `login_error`, show it -->
+                    <div id="errorMessage" class="{% if not login_error %}hidden {% endif %}mb-4 p-4 bg-error-50 border border-error-200 rounded-lg">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-error-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <p id="errorText" class="text-sm font-medium text-error-700">{{ login_error|default:'Invalid credentials. Please try again.' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" method="post" action="{% url 'login' %}" class="space-y-5" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+                        <!-- Email Address -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-text-primary mb-1.5">
+                                Email Address <span class="text-error">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                                    </svg>
+                                </div>
+                                    <input type="email" 
+                                        id="email" 
+                                        name="username" 
+                                        class="input pl-10" 
+                                        placeholder="student@university.edu"
+                                        required
+                                        autocomplete="email"
+                                        value="">
+                            </div>
+                            <p id="emailError" class="text-xs text-error mt-1 hidden">Please enter a valid email address</p>
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-text-primary mb-1.5">
+                                Password <span class="text-error">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                </div>
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       class="input pl-10 pr-10" 
+                                       placeholder="Enter your password"
+                                       required
+                                       autocomplete="current-password"
+                                       value="">
+                                <button type="button" 
+                                        id="togglePassword" 
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+                                        aria-label="Toggle password visibility">
+                                    <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p id="passwordError" class="text-xs text-error mt-1 hidden">Please enter your password</p>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" 
+                                       id="rememberMe" 
+                                       name="rememberMe" 
+                                       class="w-4 h-4 text-primary border-border rounded focus:ring-2 focus:ring-primary">
+                                <label for="rememberMe" class="ml-2 text-sm text-text-secondary">
+                                    Remember me
+                                </label>
+                            </div>
+                            <button type="button" 
+                                    id="forgotPasswordLink" 
+                                    class="text-sm text-primary hover:text-primary-700 font-medium transition-colors">
+                                Forgot Password?
+                            </button>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" 
+                                id="submitButton"
+                                class="btn btn-primary w-full py-3 text-base font-semibold">
+                            <span id="buttonText">Sign In</span>
+                            <svg id="loadingSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-border"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-surface text-text-secondary">New to EduTrack?</span>
+                        </div>
+                    </div>
+
+                    <!-- Registration Link -->
+                    <div class="text-center">
+                        <a href="{% url 'register' %}" class="btn btn-outline w-full py-3 text-base font-semibold">
+                            Create New Account
+                        </a>
+                    </div>
+
+                    <!-- Security Badges -->
+                    <div class="mt-6 pt-6 border-t border-border">
+                        <div class="flex items-center justify-center space-x-4 text-xs text-text-secondary">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>SSL Secured</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Privacy Protected</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                <span>GDPR Compliant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Feature Highlights -->
+                <div class="lg:hidden mt-6 space-y-3">
+                    <div class="flex items-center space-x-3 text-sm text-text-secondary">
+                        <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span>Access personalized learning dashboard</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-sm text-text-secondary">
+                        <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span>Resume learning from where you left off</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-sm text-text-secondary">
+                        <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span>Track progress with detailed analytics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-surface rounded-xl shadow-2xl max-w-md w-full">
+            <div class="flex items-center justify-between p-6 border-b border-border">
+                <h3 class="text-xl font-heading font-bold text-text-primary">Reset Your Password</h3>
+                <button type="button" id="closeForgotPasswordModal" class="text-text-secondary hover:text-text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="forgotPasswordForm" class="p-6">
+                <p class="text-sm text-text-secondary mb-4">Enter your email address and we'll send you instructions to reset your password.</p>
+                <div class="mb-4">
+                    <label for="resetEmail" class="block text-sm font-medium text-text-primary mb-1.5">
+                        Email Address
+                    </label>
+                    <input type="email" 
+                           id="resetEmail" 
+                           name="resetEmail" 
+                           class="input" 
+                           placeholder="student@university.edu"
+                           required>
+                    <p id="resetEmailError" class="text-xs text-error mt-1 hidden">Please enter a valid email address</p>
+                </div>
+                <div id="resetSuccessMessage" class="hidden mb-4 p-3 bg-success-50 border border-success-200 rounded-lg">
+                    <p class="text-sm text-success-700">Password reset instructions have been sent to your email.</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" id="cancelResetButton" class="btn btn-outline flex-1 py-2">Cancel</button>
+                    <button type="submit" id="resetSubmitButton" class="btn btn-primary flex-1 py-2">
+                        <span id="resetButtonText">Send Reset Link</span>
+                        <svg id="resetLoadingSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-surface border-t border-border mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-6 h-6 text-primary" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="currentColor"/>
+                            <path d="M20 10L28 15V25L20 30L12 25V15L20 10Z" fill="white"/>
+                        </svg>
+                        <span class="text-lg font-heading font-bold text-text-primary">EduTrack</span>
+                    </div>
+                    <p class="text-sm text-text-secondary">Empowering students with interactive learning experiences and comprehensive progress tracking.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-text-primary mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-text-secondary">
+                        <li><a href="student_login.html" class="hover:text-primary transition-colors">Login</a></li>
+                        <li><a href="{% url 'register' %}" class="hover:text-primary transition-colors">Register</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">About Us</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-text-primary mb-3">Support</h4>
+                    <ul class="space-y-2 text-sm text-text-secondary">
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Help Center</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Terms of Service</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">Privacy Policy</a></li>
+                        <li><a href="javascript:void(0)" class="hover:text-primary transition-colors">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-border text-center text-sm text-text-secondary">
+                <p>© 2025 EduTrack Platform. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form elements
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const submitButton = document.getElementById('submitButton');
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const successMessage = document.getElementById('successMessage');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            if (type === 'text') {
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
+            } else {
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+            }
+        });
+
+        // Check if user just registered
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                successMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                }, 5000);
+            }
+
+            // Check for saved credentials
+            const savedEmail = localStorage.getItem('edutrack_saved_email');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+
+            // Pre-fill with registered user data for demo
+            const userData = localStorage.getItem('edutrack_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                emailInput.value = user.email;
+            }
+        });
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+
+            // Validate email
+            if (!emailInput.value.trim()) {
+                emailError.textContent = 'Email address is required';
+                emailError.classList.remove('hidden');
+                emailInput.classList.add('border-error');
+                isValid = false;
+            } else if (!validateEmail(emailInput.value)) {
+                emailError.textContent = 'Please enter a valid email address';
+                emailError.classList.remove('hidden');
+                emailInput.classList.add('border-error');
+                isValid = false;
+            } else {
+                emailError.classList.add('hidden');
+                emailInput.classList.remove('border-error');
+            }
+
+            // Validate password
+            if (!passwordInput.value) {
+                passwordError.textContent = 'Password is required';
+                passwordError.classList.remove('hidden');
+                passwordInput.classList.add('border-error');
+                isValid = false;
+            } else {
+                passwordError.classList.add('hidden');
+                passwordInput.classList.remove('border-error');
+            }
+
+            return isValid;
+        }
+
+        // Form submission: validate and allow server-side POST to handle auth/redirect
+        loginForm.addEventListener('submit', function(e) {
+            // Hide previous messages
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+
+            if (!validateForm()) {
+                e.preventDefault();
+                return;
+            }
+
+            // Show loading state
+            submitButton.disabled = true;
+            buttonText.textContent = 'Signing In...';
+            loadingSpinner.classList.remove('hidden');
+
+            // Persist saved email if requested
+            if (rememberMeCheckbox.checked) {
+                localStorage.setItem('edutrack_saved_email', emailInput.value);
+            } else {
+                localStorage.removeItem('edutrack_saved_email');
+            }
+
+            // Allow normal form submission to the server (do not call preventDefault)
+        });
+
+        function showError(message) {
+            submitButton.disabled = false;
+            buttonText.textContent = 'Sign In';
+            loadingSpinner.classList.add('hidden');
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Forgot Password Modal
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
+        const cancelResetButton = document.getElementById('cancelResetButton');
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+        const resetEmail = document.getElementById('resetEmail');
+        const resetEmailError = document.getElementById('resetEmailError');
+        const resetSuccessMessage = document.getElementById('resetSuccessMessage');
+        const resetSubmitButton = document.getElementById('resetSubmitButton');
+        const resetButtonText = document.getElementById('resetButtonText');
+        const resetLoadingSpinner = document.getElementById('resetLoadingSpinner');
+
+        function openForgotPasswordModal() {
+            forgotPasswordModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            resetEmail.value = emailInput.value;
+        }
+
+        function closeForgotPasswordModalFunc() {
+            forgotPasswordModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            resetSuccessMessage.classList.add('hidden');
+            resetEmailError.classList.add('hidden');
+            resetEmail.classList.remove('border-error');
+        }
+
+        forgotPasswordLink.addEventListener('click', openForgotPasswordModal);
+        closeForgotPasswordModal.addEventListener('click', closeForgotPasswordModalFunc);
+        cancelResetButton.addEventListener('click', closeForgotPasswordModalFunc);
+
+        // Close modal on outside click
+        forgotPasswordModal.addEventListener('click', (e) => {
+            if (e.target === forgotPasswordModal) {
+                closeForgotPasswordModalFunc();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !forgotPasswordModal.classList.contains('hidden')) {
+                closeForgotPasswordModalFunc();
+            }
+        });
+
+        // Forgot password form submission
+        forgotPasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            resetSuccessMessage.classList.add('hidden');
+            
+            if (!resetEmail.value.trim()) {
+                resetEmailError.textContent = 'Email address is required';
+                resetEmailError.classList.remove('hidden');
+                resetEmail.classList.add('border-error');
+                return;
+            } else if (!validateEmail(resetEmail.value)) {
+                resetEmailError.textContent = 'Please enter a valid email address';
+                resetEmailError.classList.remove('hidden');
+                resetEmail.classList.add('border-error');
+                return;
+            } else {
+                resetEmailError.classList.add('hidden');
+                resetEmail.classList.remove('border-error');
+            }
+
+            // Show loading state
+            resetSubmitButton.disabled = true;
+            resetButtonText.textContent = 'Sending...';
+            resetLoadingSpinner.classList.remove('hidden');
+
+            // Simulate sending reset email
+            setTimeout(() => {
+                resetSubmitButton.disabled = false;
+                resetButtonText.textContent = 'Send Reset Link';
+                resetLoadingSpinner.classList.add('hidden');
+                resetSuccessMessage.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    closeForgotPasswordModalFunc();
+                }, 3000);
+            }, 2000);
+        });
+
+        // Clear error messages on input
+        emailInput.addEventListener('input', function() {
+            if (this.value) {
+                emailError.classList.add('hidden');
+                this.classList.remove('border-error');
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.value) {
+                passwordError.classList.add('hidden');
+                this.classList.remove('border-error');
+            }
+        });
+
+        resetEmail.addEventListener('input', function() {
+            if (this.value) {
+                resetEmailError.classList.add('hidden');
+                this.classList.remove('border-error');
+            }
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
