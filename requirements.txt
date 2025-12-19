@@ -1,0 +1,6 @@
+Django>=6.0,<7.0
+pymysql
+mysqlclient==2.2.7
+
+# Optional: pin exact versions after testing in your environment
+# Add other packages here if you later install them (e.g. djangorestframework)

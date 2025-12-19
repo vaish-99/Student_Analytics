@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.db import transaction, IntegrityError
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, reverse
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -22,15 +26,33 @@ def register(request):
         course = request.POST.get('course')
         email = request.POST.get('email')
 
-        # Create user and save email if provided
-        user = User.objects.create_user(username=username, password=password, email=email)
-        StudentProfile.objects.create(
-            user=user,
-            student_id=student_id,
-            course=course
-        )
-        # Redirect to login with a flag so template can show success message
-        return redirect(reverse('login') + '?registered=true')
+        # 1. Check if user already exists BEFORE trying to create
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "This username is already taken.")
+            return render(request, 'student_registration.html')
+
+        try:
+            # 2. Use a transaction so if Profile fails, User is rolled back
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=username, 
+                    password=password, 
+                    email=email
+                )
+                
+                StudentProfile.objects.create(
+                    user=user,
+                    student_id=student_id,
+                    course=course
+                )
+                # user.save() is NOT needed here; create_user already saved it.
+
+            return redirect(reverse('login') + '?registered=true')
+
+        except IntegrityError as e:
+            # This catches cases where student_id might be a duplicate too
+            messages.error(request, "Registration failed: Data integrity error.")
+            print(f"Database Error: {e}")
 
     return render(request, 'student_registration.html')
 
@@ -95,13 +117,23 @@ def dashboard(request):
 @login_required
 def learning_module(request):
     if request.method == 'POST':
-        profile = StudentProfile.objects.get(user=request.user)
+        # Ensure profile exists for the logged-in user
+        profile, _ = StudentProfile.objects.get_or_create(user=request.user, defaults={'student_id': '', 'course': ''})
+
+        # Parse and validate inputs
+        try:
+            quiz = int(request.POST.get('quiz') or 0)
+            assignment = int(request.POST.get('assignment') or 0)
+            time_spent = float(request.POST.get('time') or 0.0)
+        except (TypeError, ValueError):
+            # Keep the user on the page and show an error message
+            return render(request, 'learning_module_viewer.html', {'error': 'Invalid input - please enter numeric values.'})
 
         LearningData.objects.create(
             student=profile,
-            quiz_score=request.POST['quiz'],
-            assignment_score=request.POST['assignment'],
-            time_spent_hours=request.POST['time']
+            quiz_score=quiz,
+            assignment_score=assignment,
+            time_spent_hours=time_spent
         )
         return redirect('dashboard')
 
@@ -113,21 +145,25 @@ def learning_module(request):
 def learning_create(request):
     if request.method != 'POST':
         return HttpResponseBadRequest('POST required')
+    # Ensure profile exists, create a minimal one if missing
+    profile, _ = StudentProfile.objects.get_or_create(user=request.user, defaults={'student_id': '', 'course': ''})
 
-    profile = StudentProfile.objects.get(user=request.user)
     try:
-        quiz = int(request.POST.get('quiz'))
-        assignment = int(request.POST.get('assignment'))
-        time_spent = float(request.POST.get('time'))
+        quiz = int(request.POST.get('quiz') or 0)
+        assignment = int(request.POST.get('assignment') or 0)
+        time_spent = float(request.POST.get('time') or 0.0)
     except (TypeError, ValueError):
-        return HttpResponseBadRequest('Invalid input')
+        return JsonResponse({'success': False, 'error': 'Invalid input'}, status=400)
 
-    ld = LearningData.objects.create(
-        student=profile,
-        quiz_score=quiz,
-        assignment_score=assignment,
-        time_spent_hours=time_spent,
-    )
+    try:
+        ld = LearningData.objects.create(
+            student=profile,
+            quiz_score=quiz,
+            assignment_score=assignment,
+            time_spent_hours=time_spent,
+        )
+    except Exception as exc:
+        return JsonResponse({'success': False, 'error': str(exc)}, status=500)
 
     return JsonResponse({'success': True, 'id': ld.id, 'quiz': ld.quiz_score, 'assignment': ld.assignment_score, 'time': ld.time_spent_hours})
 
@@ -140,17 +176,17 @@ def learning_update(request, pk):
     try:
         ld = LearningData.objects.get(pk=pk)
     except LearningData.DoesNotExist:
-        return HttpResponseBadRequest('Not found')
+        return JsonResponse({'success': False, 'error': 'Not found'}, status=404)
 
     if ld.student.user != request.user:
         return HttpResponseForbidden('Not allowed')
 
     try:
-        quiz = int(request.POST.get('quiz'))
-        assignment = int(request.POST.get('assignment'))
-        time_spent = float(request.POST.get('time'))
+        quiz = int(request.POST.get('quiz') or ld.quiz_score)
+        assignment = int(request.POST.get('assignment') or ld.assignment_score)
+        time_spent = float(request.POST.get('time') or ld.time_spent_hours)
     except (TypeError, ValueError):
-        return HttpResponseBadRequest('Invalid input')
+        return JsonResponse({'success': False, 'error': 'Invalid input'}, status=400)
 
     ld.quiz_score = quiz
     ld.assignment_score = assignment
@@ -168,7 +204,7 @@ def learning_delete(request, pk):
     try:
         ld = LearningData.objects.get(pk=pk)
     except LearningData.DoesNotExist:
-        return HttpResponseBadRequest('Not found')
+        return JsonResponse({'success': False, 'error': 'Not found'}, status=404)
 
     if ld.student.user != request.user:
         return HttpResponseForbidden('Not allowed')
