@@ -12,3 +12,11 @@ To process learning data and calculate performance metrics<br>
 To visually present analytics in a user-friendly dashboard<br>
 To understand how data-driven decision-making improves learning outcomes<br>
 
+🧠 Key Features
+
+🔐 Student authentication (login & logout)<br>
+📝 Student profile management<br>
+📊 Learning data input (quiz scores, assignment scores, study time)<br>
+🧮 Performance score calculation<br>
+📈 Student analytics dashboard<br>
+🗄️ Database-backed application using Django and MySQL<br>
