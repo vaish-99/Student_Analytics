@@ -6,8 +6,9 @@ It enables students to record their learning activities and performance, while p
 
 🎯 Objectives
 
-To collect structured learning data from students
-To perform CRUD operations using a relational database
-To process learning data and calculate performance metrics
-To visually present analytics in a user-friendly dashboard
-To understand how data-driven decision-making improves learning outcomes
+To collect structured learning data from students <br>
+To perform CRUD operations using a relational database<br>
+To process learning data and calculate performance metrics<br>
+To visually present analytics in a user-friendly dashboard<br>
+To understand how data-driven decision-making improves learning outcomes<br>
+
